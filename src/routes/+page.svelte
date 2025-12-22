@@ -10,9 +10,7 @@
   import Header from '$lib/components/Header.svelte';
   import Footer from '$lib/components/Footer.svelte';
 
-  // `data` comes from the server load function
-  export let data; // comes from load function
-  const GITHUB_TOKEN = data.githubToken;
+
 
   let repoUrl = '';
   let loading = false;
@@ -107,147 +105,84 @@ $: if (analysis) {
      GraphQL fetch (single call)
   ------------------------------ */
 
-  async function fetchGraphQL(query, variables) {
-    const res = await fetch('https://api.github.com/graphql', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${GITHUB_TOKEN}`
-      },
-      body: JSON.stringify({ query, variables })
-    });
-
-    const json = await res.json();
-    if (json.errors) {
-      throw new Error(json.errors[0].message);
-    }
-    return json.data;
+async function analyzeRepository() {
+  const parsed = parseGitHubUrl(repoUrl);
+  if (!parsed) {
+    error = 'Please enter a valid GitHub repository URL.';
+    return;
   }
 
-  /* -----------------------------
-     Main analysis
-  ------------------------------ */
+  loading = true;
+  error = '';
+  analysis = null;
 
-  async function analyzeRepository() {
-    const parsed = parseGitHubUrl(repoUrl);
-    if (!parsed) {
-      error = 'Please enter a valid GitHub repository URL.';
-      return;
-    }
+  try {
+const res = await fetch('/api/analyze', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify(parsed) // parsed = { owner, repo }
+});
 
-    loading = true;
-    error = '';
-    analysis = null;
 
-    try {
-      const oneYearAgo = new Date();
-      oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
 
-const query = `
-  query RepoHealth($owner: String!, $repo: String!, $since: GitTimestamp!) {
-    repository(owner: $owner, name: $repo) {
-      name
-      nameWithOwner
-      description
-      createdAt
-      pushedAt
-      stargazerCount
-      forkCount
+    const r = await res.json();
+    if (r.error) throw new Error(r.error);
 
-      issues(first: 100, states: OPEN) {
-        totalCount
-        nodes {
-          createdAt
-        }
-      }
+    // ⬇ reuse your existing metric logic
+    const now = new Date();
 
-      closedIssues: issues(first: 100, states: CLOSED) {
-        totalCount
-      }
+    const daysSinceLastUpdate = Math.floor(
+      (now - new Date(r.pushedAt)) / 86400000
+    );
 
-      defaultBranchRef {
-        target {
-          ... on Commit {
-            history(since: $since, first: 100) {
-              totalCount
-              nodes {
-                author {
-                  user {
-                    login
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
+    const openIssues = r.issues.totalCount;
+    const closedIssues = r.closedIssues.totalCount;
+    const totalIssues = openIssues + closedIssues;
+
+    const openIssueAges = r.issues.nodes.map(
+      i => Math.floor((now - new Date(i.createdAt)) / 86400000)
+    );
+
+    const avgIssueAge = openIssueAges.length
+      ? Math.floor(openIssueAges.reduce((a, b) => a + b, 0) / openIssueAges.length)
+      : 0;
+
+    const commits = r.defaultBranchRef?.target?.history;
+    const commitsLastYear = commits?.totalCount || 0;
+
+    const recentContributors = new Set(
+      commits?.nodes?.map(c => c.author?.user?.login).filter(Boolean)
+    ).size;
+
+    const metrics = {
+      name: r.name,
+      fullName: r.nameWithOwner,
+      description: r.description,
+      stars: r.stargazerCount,
+      forks: r.forkCount,
+      openIssues,
+      closedIssues,
+      totalIssues,
+      daysSinceLastUpdate,
+      commitsLastYear,
+      recentContributors,
+      avgIssueAge,
+      created: new Date(r.createdAt).toLocaleDateString(),
+      lastUpdated: new Date(r.pushedAt).toLocaleDateString()
+    };
+
+    const healthScore = calculateHealthScore(metrics);
+    const status = getHealthStatus(healthScore);
+
+    analysis = { ...metrics, healthScore, status };
+
+  } catch (err) {
+    error = err.message || 'Failed to analyze repository.';
+  } finally {
+    loading = false;
   }
-`;
+}
 
-
-      const data = await fetchGraphQL(query, {
-        owner: parsed.owner,
-        repo: parsed.repo,
-        since: oneYearAgo.toISOString()
-      });
-
-      const r = data.repository;
-      const now = new Date();
-
-      const daysSinceLastUpdate = Math.floor(
-        (now - new Date(r.pushedAt)) / 86400000
-      );
-
-      const openIssues = r.issues.totalCount;
-      const closedIssues = r.closedIssues.totalCount;
-      const totalIssues = openIssues + closedIssues;
-
-      const openIssueAges = r.issues.nodes.map(
-        i => Math.floor((now - new Date(i.createdAt)) / 86400000)
-      );
-
-      const avgIssueAge = openIssueAges.length
-        ? Math.floor(openIssueAges.reduce((a, b) => a + b, 0) / openIssueAges.length)
-        : 0;
-
-      const commits = r.defaultBranchRef?.target?.history;
-      const commitsLastYear = commits?.totalCount || 0;
-
-      const recentContributors = new Set(
-        commits?.nodes
-          ?.map(c => c.author?.user?.login)
-          .filter(Boolean)
-      ).size;
-
-      const metrics = {
-        name: r.name,
-        fullName: r.nameWithOwner,
-        description: r.description,
-        stars: r.stargazerCount,
-        forks: r.forkCount,
-        openIssues,
-        closedIssues,
-        totalIssues,
-        daysSinceLastUpdate,
-        commitsLastYear,
-        recentContributors,
-        avgIssueAge,
-        created: new Date(r.createdAt).toLocaleDateString(),
-        lastUpdated: new Date(r.pushedAt).toLocaleDateString()
-      };
-
-      const healthScore = calculateHealthScore(metrics);
-      const status = getHealthStatus(healthScore);
-
-      analysis = { ...metrics, healthScore, status };
-
-    } catch (err) {
-      error = err.message || 'Failed to analyze repository.';
-    } finally {
-      loading = false;
-    }
-  }
 </script>
 
 <Header/>
