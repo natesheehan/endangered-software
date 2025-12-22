@@ -9,7 +9,7 @@
 
     <!-- Site / Page title -->
     <h1 class="text-lg font-semibold tracking-tight sm:text-xl text-slate-800 dark:text-slate-100">
-      <b class="text-red-400">The Red List</b> of Endangered Open Software <i class="text-sm text-slate-500 dark:text-slate-400">v0.1</i>
+      <b class="text-red-600">The Red List</b> of Endangered Open Software <i class="text-sm text-slate-500 dark:text-slate-400">v0.1</i>
     </h1>
     
 
@@ -36,7 +36,7 @@
         class="flex items-center gap-2 text-sm font-medium text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-slate-100 transition"
       >
         <List size={16} />
-        <span class="hidden sm:inline">List</span>
+        <span class="hidden sm:inline text-red-600">List</span>
       </a>
 
             <a

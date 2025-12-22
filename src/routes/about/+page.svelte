@@ -19,7 +19,7 @@
              shadow-lg"
     >
       <h1 class="text-3xl sm:text-4xl font-bold text-slate-800 dark:text-slate-100 mb-4">
-        <i>What is Open Endangered Software?</i>
+        <i>What is Endangered Open Software?</i>
       </h1>
 
       <img
@@ -30,10 +30,8 @@
       >
 
       <p class="text-slate-700 dark:text-slate-300 leading-relaxed">
-        This tool analyses the <strong>health and sustainability of open-source
-        GitHub repositories</strong>. It collects a small but meaningful set of
-        signals from the GitHub GraphQL API and combines them into a single,
-        interpretable health score.
+        Endangered open software refers to open-source and openly distributed software projects whose continued development, maintenance, or availability is at risk, despite their ongoing use and significance. These risks are rarely the result of a single failure. More often, they emerge from the accumulation of mundane pressures such as limited maintainer time, unstable funding, technical debt, dependency fragility, and declining contributor communities. Over time, these ordinary conditions can undermine the sustainability of software that remains deeply embedded in research, industry, and public infrastructure. 
+ 
       </p>
     </section>
 
@@ -78,38 +76,44 @@
     </nav>
 
     <!-- Sections as Cards -->
-    <section id="state" class="rounded-lg p-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-lg">
-      <h2 class="text-xl font-semibold text-slate-800 dark:text-slate-100 mb-2">State & User Input</h2>
-      <p class="text-slate-700 dark:text-slate-300 mb-3">The analysis begins with a small set of reactive state variables:</p>
-      <ul class="list-disc list-inside text-slate-700 dark:text-slate-300 space-y-1">
-        <li><code class="font-mono">repoUrl</code> — the GitHub repository URL provided by the user</li>
-        <li><code class="font-mono">loading</code> — whether an analysis request is in progress</li>
-        <li><code class="font-mono">analysis</code> — the computed metrics and health score</li>
-        <li><code class="font-mono">error</code> — validation or API errors surfaced to the UI</li>
-      </ul>
-      <p class="text-slate-700 dark:text-slate-300 mt-3">
-        This separation allows the UI to respond immediately to user actions
-        (loading states, errors, results) without unnecessary re-fetching.
-      </p>
+    <section id="why" class="rounded-lg p-6 bg-white dark:bg-slate-900 border border-slate-200 border-dashed dark:border-slate-800 shadow-lg">
+      <h2 class="text-xl font-semibold text-slate-800 dark:text-slate-100 mb-2">Why does this project exist?</h2>
+
+<p class="text-slate-700 dark:text-slate-300 mb-3">
+  Agh, yikes! Not another open software health tool!? That reaction is understandable. We have seen a steady stream of repository “health” projects come and go, including experiments like
+  <a href="https://github.com/dogweather/repo-health-check" class="underline underline-offset-4" target="_blank" rel="noopener noreferrer">repo-health-check</a>,
+  <a href="https://github.com/openedx/edx-repo-health" class="underline underline-offset-4" target="_blank" rel="noopener noreferrer">edx-repo-health</a>, and
+  <a href="https://repohealth.info/" class="underline underline-offset-4" target="_blank" rel="noopener noreferrer">repohealth.info</a>.
+  Many of these efforts were thoughtful and technically sound, yet they now sit largely unmaintained, themselves becoming examples of the fragility they were designed to diagnose.
+</p>
+
+<p class="text-slate-700 dark:text-slate-300 mb-3">
+  Alongside these are a growing number of commercial analytics products, such as
+  <a href="https://graphite.com/guides/guide-to-github-repo-analytics" class="underline underline-offset-4" target="_blank" rel="noopener noreferrer">Graphite’s repository analytics</a>,
+  which offer polished insights into development workflows and team productivity. These tools are effective for managing active engineering teams, but they are typically scoped to GitHub, tuned to short-term activity, and oriented toward optimisation rather than long-term sustainability.
+</p>
+
+<p class="text-slate-700 dark:text-slate-300">
+  This project starts from the observation that open software usually fails slowly and quietly. Maintenance burdens accumulate, governance structures thin out, dependencies harden, and platforms or institutions shift beneath a project’s feet. In response, the Red List of Endangered Software focuses on long-term development trajectories rather than momentary signals. It broadens the range of measurements across multiple platforms and software ecosystems, and treats open software as infrastructure that must be stewarded over time. The aim is not to produce another dashboard of activity metrics, but to make visible the conditions under which open software becomes endangered.
+</p>
+
     </section>
 
-    <section id="parsing" class="rounded-lg p-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-lg">
-      <h2 class="text-xl font-semibold text-slate-800 dark:text-slate-100 mb-2">Parsing the GitHub URL</h2>
+    <section id="what" class="rounded-lg p-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-lg">
+      <h2 class="text-xl font-semibold text-slate-800 dark:text-slate-100 mb-2"> What does the Red List of Endangered Software do?</h2>
       <p class="text-slate-700 dark:text-slate-300 leading-relaxed">
-        Before making any API calls, the repository URL is validated and parsed.
-        A simple regular expression extracts the repository owner and name.
+                     This tool analyses the <strong>health and sustainability of open-source
+        GitHub repositories</strong>. It collects a small but meaningful set of
+        signals from the GitHub GraphQL API and combines them into a single,
+        interpretable health score.
       </p>
-      <p class="text-slate-700 dark:text-slate-300 mt-2">
-        This step prevents unnecessary API requests and ensures that only valid
-        GitHub repositories are analysed.
-      </p>
+
     </section>
 
-    <section id="metrics" class="rounded-lg p-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-lg">
-      <h2 class="text-xl font-semibold text-slate-800 dark:text-slate-100 mb-2">Repository Metrics</h2>
+    <section id="how" class="rounded-lg p-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-lg">
+      <h2 class="text-xl font-semibold text-slate-800 dark:text-slate-100 mb-2">How does it work?</h2>
       <p class="text-slate-700 dark:text-slate-300 mb-3">
-        The tool focuses on a small number of interpretable signals rather than
-        opaque machine-learning models. These include:
+        Currently the tool focuses on a small number of interpretable signals such as:
       </p>
       <ul class="list-disc list-inside text-slate-700 dark:text-slate-300 space-y-1">
         <li><strong>Activity</strong> — days since last update, commits in the past year</li>
@@ -120,45 +124,31 @@
       <p class="text-slate-700 dark:text-slate-300 mt-3">
         Each metric reflects a different dimension of software sustainability: technical upkeep, responsiveness, and social resilience.
       </p>
-    </section>
-
-    <section id="scoring" class="rounded-lg p-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-lg">
-      <h2 class="text-xl font-semibold text-slate-800 dark:text-slate-100 mb-2">Health Scoring Model</h2>
-      <p class="text-slate-700 dark:text-slate-300 mb-2">
+            <p class="text-slate-700 dark:text-slate-300 mb-2">
         The health score starts at <strong>100</strong> and is reduced based on risk factors such as long periods of inactivity, high ratios of open issues, or a lack of recent contributors.
       </p>
-      <p class="text-slate-700 dark:text-slate-300 mb-2">
-        Rather than claiming precision, the score is intended as a <strong>comparative heuristic</strong> — a way to quickly identify projects that may require attention or support.
-      </p>
+
       <p class="text-slate-700 dark:text-slate-300">
         The resulting score is mapped to conservation-style categories such as <em>Least Concern</em>, <em>Endangered</em>, and <em>Extinct</em>.
       </p>
+
     </section>
 
-    <section id="graphql" class="rounded-lg p-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-lg">
-      <h2 class="text-xl font-semibold text-slate-800 dark:text-slate-100 mb-2">Why GraphQL?</h2>
+    <section id="who" class="rounded-lg p-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-lg">
+      <h2 class="text-xl font-semibold text-slate-800 dark:text-slate-100 mb-2">Who is developing it?</h2>
       <p class="text-slate-700 dark:text-slate-300">
-        All repository data is retrieved using a <strong>single GitHub GraphQL query</strong>. This avoids REST rate-limit issues and ensures that only the required fields are fetched.
-      </p>
-      <p class="text-slate-700 dark:text-slate-300 mt-2">
-        Using GraphQL also makes the analysis more reproducible: the entire data surface used by the model is explicit and auditable in one query.
+          Endangered open software is currently developed by Nathanael Sheehan. 
       </p>
     </section>
 
-    <section id="analysis" class="rounded-lg p-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-lg">
-      <h2 class="text-xl font-semibold text-slate-800 dark:text-slate-100 mb-2">End-to-End Analysis Flow</h2>
-      <ol class="list-decimal list-inside space-y-1 text-slate-700 dark:text-slate-300">
-        <li>User submits a GitHub repository URL</li>
-        <li>The URL is parsed and validated</li>
-        <li>A single GraphQL request retrieves repository data</li>
-        <li>Metrics are computed client-side</li>
-        <li>A health score and status label are generated</li>
-        <li>The results are rendered in the interface</li>
-      </ol>
-      <p class="text-slate-700 dark:text-slate-300 mt-2">
-        This approach keeps the system lightweight, transparent, and easy to extend with additional metrics in future iterations.
+    <section id="when" class="rounded-lg p-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-lg">
+      <h2 class="text-xl font-semibold text-slate-800 dark:text-slate-100 mb-2">When will a full list be published?</h2>
+      <p class="text-slate-700 dark:text-slate-300">
+        2026.
       </p>
+
     </section>
+
   </main>
 </div>
 
