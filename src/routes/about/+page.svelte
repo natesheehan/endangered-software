@@ -3,15 +3,15 @@
   import Footer from "$lib/components/Footer.svelte";
 </script>
 
-<div class="min-h-screen
-            bg-gradient-to-br from-slate-50 to-slate-100
-            dark:from-slate-950 dark:to-slate-900
-            p-4 sm:p-8">
+<Header />
 
-  <Header />
-
+<div
+  class="min-h-screen bg-gradient-to-br
+         from-slate-50 to-slate-100
+         dark:from-slate-950 dark:to-slate-900
+         p-4 sm:p-8"
+>
   <main class="mx-auto max-w-5xl space-y-12">
-
     <!-- Intro Card -->
     <section
       class="rounded-lg p-6 bg-white dark:bg-slate-900
@@ -19,8 +19,16 @@
              shadow-lg"
     >
       <h1 class="text-3xl sm:text-4xl font-bold text-slate-800 dark:text-slate-100 mb-4">
-        About This Project
+        <i>What is Open Endangered Software?</i>
       </h1>
+
+      <img
+        src="/mascto2.png"
+        alt=""
+        class="h-48 w-48 block m-auto"
+        style="transform: scaleX(-1);"
+      >
+
       <p class="text-slate-700 dark:text-slate-300 leading-relaxed">
         This tool analyses the <strong>health and sustainability of open-source
         GitHub repositories</strong>. It collects a small but meaningful set of
@@ -35,12 +43,37 @@
              border-y border-gray-200 dark:border-slate-700 py-3 px-4 rounded-lg shadow-sm"
     >
       <ul class="flex flex-wrap gap-4 text-sm font-medium text-gray-600 dark:text-slate-400">
-        <li><a href="#state" class="hover:text-gray-900 dark:hover:text-slate-100 transition">State & Inputs</a></li>
-        <li><a href="#parsing" class="hover:text-gray-900 dark:hover:text-slate-100 transition">URL Parsing</a></li>
-        <li><a href="#metrics" class="hover:text-gray-900 dark:hover:text-slate-100 transition">Metrics</a></li>
-        <li><a href="#scoring" class="hover:text-gray-900 dark:hover:text-slate-100 transition">Health Scoring</a></li>
-        <li><a href="#graphql" class="hover:text-gray-900 dark:hover:text-slate-100 transition">GraphQL</a></li>
-        <li><a href="#analysis" class="hover:text-gray-900 dark:hover:text-slate-100 transition">Analysis Flow</a></li>
+<li>
+  <a href="#why" class="hover:text-gray-900 dark:hover:text-slate-100 transition">
+    Why does this project exist?
+  </a>
+</li>
+
+<li>
+  <a href="#what" class="hover:text-gray-900 dark:hover:text-slate-100 transition">
+    What does the Red List of Endangered Software do?
+  </a>
+</li>
+
+<li>
+  <a href="#how" class="hover:text-gray-900 dark:hover:text-slate-100 transition">
+    How does it work?
+  </a>
+</li>
+
+<li>
+  <a href="#who" class="hover:text-gray-900 dark:hover:text-slate-100 transition">
+    Who is developing it?
+  </a>
+</li>
+
+<li>
+  <a href="#when" class="hover:text-gray-900 dark:hover:text-slate-100 transition">
+    When will a full list be published?
+  </a>
+</li>
+
+
       </ul>
     </nav>
 
@@ -126,8 +159,7 @@
         This approach keeps the system lightweight, transparent, and easy to extend with additional metrics in future iterations.
       </p>
     </section>
-
   </main>
-
-  <Footer />
 </div>
+
+<Footer />

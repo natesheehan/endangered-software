@@ -5,7 +5,8 @@
     GitBranch,
     AlertTriangle,
     Activity,
-    Clock
+    Clock,
+    Search
   } from 'lucide-svelte';
   import Header from '$lib/components/Header.svelte';
   import Footer from '$lib/components/Footer.svelte';
@@ -195,6 +196,7 @@ const res = await fetch('/api/analyze', {
   <div class="max-w-5xl mx-auto">
 
     <!-- Header -->
+     
 
     <div class="mb-8 text-center">
       <h1
@@ -203,59 +205,82 @@ const res = await fetch('/api/analyze', {
                text-slate-800 dark:text-slate-100"
       >
         <AlertTriangle class="text-red-500" size={40} />
-        Endangered Software Monitor
+        Endangered Open Software Monitor
         <AlertTriangle class="text-red-500" size={40} />
       </h1>
+            <img src="/mascto2.png" alt="" class="h-48 w-48 block m-auto" style="  transform: scaleX(-1);">
       <p class="text-slate-600 dark:text-slate-400">
-        Assess the health and maintenance risk of GitHub repositories
+        Assess the health and maintenance risk of GitHub repositories.
       </p>
     </div>
+<!-- Input Card (enhanced for dark mode) -->
+<div
+  class="mb-6 rounded-2xl p-[1px]
+         bg-gradient-to-r from-slate-200/70 to-slate-300/70
+         dark:from-red-500/40 dark:via-fuchsia-500/20 dark:to-slate-500/20
+         shadow-lg"
+>
+  <div
+    class="rounded-2xl p-4 sm:p-6
+           bg-white/80 dark:bg-slate-950/70
+           backdrop-blur
+           border border-slate-200/70 dark:border-slate-800/70"
+  >
+    <div class="flex flex-col gap-3 sm:flex-row sm:items-center">
+      <!-- Search input with icon -->
+      <div class="relative flex-1">
+        <Search
+          size={18}
+          class="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500"
+        />
 
-    <!-- Input Card -->
-    <div
-      class="mb-6 rounded-lg p-4 sm:p-6
-             bg-white dark:bg-slate-900
-             border border-slate-200 dark:border-slate-800
-             shadow-lg"
-    >
-      <div class="flex flex-col gap-3 sm:flex-row">
         <input
           type="text"
           bind:value={repoUrl}
           placeholder="https://github.com/owner/repo"
-          class="flex-1 rounded-lg px-4 py-3
-                 bg-white dark:bg-slate-950
-                 border border-slate-300 dark:border-slate-700
+          class="w-full rounded-xl pl-11 pr-4 py-3
+                 bg-white/90 dark:bg-slate-950
+                 border border-slate-300/80 dark:border-slate-700/80
                  text-slate-900 dark:text-slate-100
                  placeholder-slate-400 dark:placeholder-slate-500
-                 focus:outline-none focus:ring-2 focus:ring-red-500"
+                 shadow-sm dark:shadow-[0_0_0_1px_rgba(255,255,255,0.04)]
+                 focus:outline-none
+                 focus:ring-2 focus:ring-red-500/60
+                 focus:border-red-500/60
+                 dark:focus:ring-red-400/50
+                 transition"
           on:keydown={(e) => e.key === 'Enter' && analyzeRepository()}
         />
-
-        <button
-          on:click={analyzeRepository}
-          disabled={loading}
-          class="rounded-lg px-6 py-3
-                 bg-red-500 hover:bg-red-700
-                 text-white font-semibold
-                 disabled:bg-red-200 disabled:cursor-not-allowed
-                 transition-colors"
-        >
-          {loading ? 'Monitoring' : 'Monitor'}
-        </button>
       </div>
 
-      {#if error}
-        <div
-          class="mt-4 flex gap-3 rounded-lg p-4
-                 bg-red-50 dark:bg-red-950
-                 border border-red-200 dark:border-red-900"
-        >
-          <AlertCircle class="text-red-500" size={20} />
-          <p class="text-red-700 dark:text-red-300">{error}</p>
-        </div>
-      {/if}
+      <button
+        on:click={analyzeRepository}
+        disabled={loading}
+        class="rounded-xl px-6 py-3 font-semibold
+               text-white
+               bg-red-500 hover:bg-red-600
+               shadow-md shadow-red-500/20
+               dark:shadow-red-500/25
+               disabled:bg-red-200 disabled:text-red-900/60 disabled:shadow-none disabled:cursor-not-allowed
+               transition"
+      >
+        {loading ? 'Monitoring' : 'Monitor'}
+      </button>
     </div>
+
+    {#if error}
+      <div
+        class="mt-4 flex gap-3 rounded-xl p-4
+               bg-red-50/80 dark:bg-red-950/60
+               border border-red-200/70 dark:border-red-900/70"
+      >
+        <AlertCircle class="text-red-500" size={20} />
+        <p class="text-red-700 dark:text-red-200">{error}</p>
+      </div>
+    {/if}
+  </div>
+</div>
+
 
     {#if analysis}
       <div class="space-y-6">
