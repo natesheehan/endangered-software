@@ -5,10 +5,13 @@
 <header class="w-full bg-white border-b border-gray-200 dark:bg-slate-900 dark:border-slate-700">
   <div class="mx-auto max-w-5xl px-4 py-3 flex items-center justify-between">
 
+         <img src="/mascto2.png" alt="" class="h-24 w-24" style="  transform: scaleX(-1);">
+
     <!-- Site / Page title -->
     <h1 class="text-lg font-semibold tracking-tight sm:text-xl text-slate-800 dark:text-slate-100">
-      The Red List of Endangered Software <i class="text-sm text-slate-500 dark:text-slate-400">v0.1</i>
+      <b class="text-red-500">The Red List</b> of Endangered Software <i class="text-sm text-slate-500 dark:text-slate-400">v0.1</i>
     </h1>
+    
 
     <!-- Navigation -->
     <nav class="flex items-center gap-6">

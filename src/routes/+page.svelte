@@ -195,15 +195,16 @@ const res = await fetch('/api/analyze', {
   <div class="max-w-5xl mx-auto">
 
     <!-- Header -->
+
     <div class="mb-8 text-center">
       <h1
         class="mb-2 flex items-center justify-center gap-3
                text-3xl sm:text-4xl font-bold
                text-slate-800 dark:text-slate-100"
       >
-        <AlertTriangle class="text-orange-500" size={40} />
-        Endangered Software Analyzer
-        <AlertTriangle class="text-orange-500" size={40} />
+        <AlertTriangle class="text-red-500" size={40} />
+        Endangered Software Monitor
+        <AlertTriangle class="text-red-500" size={40} />
       </h1>
       <p class="text-slate-600 dark:text-slate-400">
         Assess the health and maintenance risk of GitHub repositories
@@ -235,12 +236,12 @@ const res = await fetch('/api/analyze', {
           on:click={analyzeRepository}
           disabled={loading}
           class="rounded-lg px-6 py-3
-                 bg-red-600 hover:bg-red-700
+                 bg-red-500 hover:bg-red-700
                  text-white font-semibold
-                 disabled:bg-slate-400 disabled:cursor-not-allowed
+                 disabled:bg-red-200 disabled:cursor-not-allowed
                  transition-colors"
         >
-          {loading ? 'Analyzing…' : 'Analyze'}
+          {loading ? 'Monitoring' : 'Monitor'}
         </button>
       </div>
 
