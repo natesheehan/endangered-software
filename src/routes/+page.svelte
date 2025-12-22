@@ -9,8 +9,9 @@
   } from 'lucide-svelte';
   import Header from '$lib/components/Header.svelte';
   import Footer from '$lib/components/Footer.svelte';
+    import { env } from '$env/dynamic/private';
 
-  const GITHUB_TOKEN = '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';
+  const GITHUB_TOKEN = env.github;
 
   let repoUrl = '';
   let loading = false;
