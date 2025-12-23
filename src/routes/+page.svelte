@@ -18,12 +18,14 @@
   let analysis = null;
   let error = '';
 
+  
+
 // Badge variable
 let badgeMarkdown = '';
 let badgeUrl = '';
 
 // Generate Shields.io badge URL and Markdown
-const PUBLIC_BASE_URL = 'https://endangered-software.vercel.app'; // <-- your deployed domain
+const PUBLIC_BASE_URL = 'https://endangered-software.vercel.app/'; // <-- your deployed domain
 
 const generateBadge = (analysis) => {
   const [owner, repo] = analysis.fullName.split('/');
