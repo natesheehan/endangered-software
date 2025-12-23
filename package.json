@@ -19,6 +19,7 @@
 		"vite": "^7.2.6"
 	},
 	"dependencies": {
+		"badge-maker": "^5.0.2",
 		"lucide-svelte": "^0.562.0"
 	}
 }

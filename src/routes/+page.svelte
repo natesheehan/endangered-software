@@ -23,28 +23,16 @@ let badgeMarkdown = '';
 let badgeUrl = '';
 
 // Generate Shields.io badge URL and Markdown
+const PUBLIC_BASE_URL = 'https://endangered-software.vercel.app'; // <-- your deployed domain
+
 const generateBadge = (analysis) => {
-  const color = analysis.healthScore >= 80 ? 'green'
-               : analysis.healthScore >= 60 ? 'yellow'
-               : analysis.healthScore >= 40 ? 'orange'
-               : 'red';
-
-  const label = 'Repo Health';
-  
-  // Convert score and status to URL-safe string
-  const score = analysis.healthScore;          // just a number
-  const status = analysis.status.label
-                  .toLowerCase()
-                  .replace(/\s+/g, '_')      // spaces → underscores
-                  .replace(/\//g, '-');      // slashes → dash
-  
-  const style = 'flat';
-
-  const url = `https://img.shields.io/badge/${encodeURIComponent(label)}-${score}_${status}-${color}?style=${style}`;
-  
+  const [owner, repo] = analysis.fullName.split('/');
+  const url = `${PUBLIC_BASE_URL}/api/badge?owner=${encodeURIComponent(owner)}&repo=${encodeURIComponent(repo)}`;
   badgeUrl = url;
-  return `![${label}](${url})`;
+  return `![Repo Health](${url})`;
 };
+
+
 
 // Copy Markdown to clipboard
 const copyBadge = () => {
@@ -451,6 +439,7 @@ const res = await fetch('/api/analyze', {
             </div>
           </div>
         </div>
+
         <!-- Badge Generator with Preview -->
 <div class="rounded-lg p-4 sm:p-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-lg mt-6">
   <h3 class="mb-2 text-lg font-semibold text-slate-800 dark:text-slate-100">
