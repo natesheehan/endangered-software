@@ -35,7 +35,7 @@
         href="/list"
         class="flex items-center gap-2 text-sm font-medium text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-slate-100 transition"
       >
-        <List size={16} />
+        <List size={16} style="color:red" />
         <span class="hidden sm:inline text-red-600">List</span>
       </a>
 
