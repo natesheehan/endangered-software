@@ -18,7 +18,65 @@
   let analysis = null;
   let error = '';
 
-  
+  let openAlexLoading = false;
+let openAlexError = '';
+let openAlex = null; // { query_used, total, series: [{year,count}] }
+
+  let yearsBack = 20;        // default view: last 20 years
+  let chartStyle = 'bars';   // optional: future-proof if you add line style later
+
+  // Keep series within [currentYear - yearsBack + 1, currentYear]
+  $: currentYear = new Date().getFullYear();
+
+  $: openAlexFiltered =
+    openAlex?.series?.length
+      ? openAlex.series
+          .filter(d => d.year >= currentYear - (yearsBack - 1) && d.year <= currentYear)
+          .sort((a, b) => a.year - b.year)
+      : [];
+
+  $: maxCount = openAlexFiltered.length
+    ? Math.max(...openAlexFiltered.map(d => d.count), 1)
+    : 1;
+
+async function fetchOpenAlexMentions() {
+  if (!analysis) return;
+
+  openAlexLoading = true;
+  openAlexError = '';
+  openAlex = null;
+
+  const [owner, repo] = analysis.fullName.split('/');
+
+  try {
+    const res = await fetch('/api/openalex', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        owner,
+        repo,
+        name: analysis.name,
+        fullName: analysis.fullName,
+        repoUrl // you already have this bound to the input
+      })
+    });
+
+    const data = await res.json();
+    if (!res.ok || data?.error) throw new Error(data?.error || 'Failed to query OpenAlex');
+
+    openAlex = data;
+  } catch (e) {
+    openAlexError = e.message || 'Failed to query OpenAlex';
+  } finally {
+    openAlexLoading = false;
+  }
+}
+
+// Automatically fetch when analysis is ready
+$: if (analysis) {
+  fetchOpenAlexMentions();
+}
+
 
 // Badge variable
 let badgeMarkdown = '';
@@ -328,6 +386,39 @@ const res = await fetch('/api/analyze', {
           </div>
         </div>
 
+        <div class="rounded-lg p-4 sm:p-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-lg mt-6">
+  <h3 class="mb-2 text-lg font-semibold text-slate-800 dark:text-slate-100">
+    GitHub Badge
+  </h3>
+
+  <!-- Live preview -->
+  {#if badgeUrl}
+    <div class="mb-2">
+      <img src={badgeUrl} alt="Repository Health Badge" />
+    </div>
+  {/if}
+
+  <p class="text-slate-600 dark:text-slate-400 mb-2">
+    Copy and paste this Markdown to show a badge for this repository's health:
+  </p>
+
+  <div class="flex gap-2">
+    <input
+      type="text"
+      readonly
+      class="flex-1 px-3 py-2 rounded border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100"
+      bind:value={badgeMarkdown}
+    />
+    <button
+      on:click={copyBadge}
+      class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded font-semibold transition-colors"
+    >
+      Copy
+    </button>
+  </div>
+
+</div>
+
         <!-- Metrics Grid -->
         <div class="grid gap-4 sm:grid-cols-2 sm:gap-6">
 
@@ -443,38 +534,116 @@ const res = await fetch('/api/analyze', {
         </div>
 
         <!-- Badge Generator with Preview -->
+
+<!-- OpenAlex Mentions -->
+<!-- OpenAlex Mentions -->
 <div class="rounded-lg p-4 sm:p-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-lg mt-6">
-  <h3 class="mb-2 text-lg font-semibold text-slate-800 dark:text-slate-100">
-    GitHub Badge
-  </h3>
-
-  <!-- Live preview -->
-  {#if badgeUrl}
-    <div class="mb-2">
-      <img src={badgeUrl} alt="Repository Health Badge" />
+  <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+    <div>
+      <h3 class="text-lg font-semibold text-slate-800 dark:text-slate-100">
+        OpenAlex Mentions (papers per year)
+      </h3>
+      <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">
+        Showing last <span class="font-semibold">{yearsBack}</span> years (you can change this).
+      </p>
     </div>
-  {/if}
 
-  <p class="text-slate-600 dark:text-slate-400 mb-2">
-    Copy and paste this Markdown to show a badge for this repository's health:
-  </p>
+    <div class="flex items-center gap-3">
+      <!-- Years control -->
+      <label class="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300">
+        Years back
+        <input
+          type="range"
+          min="5"
+          max="50"
+          step="1"
+          bind:value={yearsBack}
+          class="w-32 accent-red-500"
+        />
+        <span class="w-10 text-right font-mono text-slate-700 dark:text-slate-200">{yearsBack}</span>
+      </label>
 
-  <div class="flex gap-2">
-    <input
-      type="text"
-      readonly
-      class="flex-1 px-3 py-2 rounded border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100"
-      bind:value={badgeMarkdown}
-    />
-    <button
-      on:click={copyBadge}
-      class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded font-semibold transition-colors"
-    >
-      Copy
-    </button>
+      <button
+        class="px-3 py-1.5 rounded-lg text-sm font-semibold
+               bg-slate-100 hover:bg-slate-200 text-slate-800
+               dark:bg-slate-800 dark:hover:bg-slate-700 dark:text-slate-100
+               transition disabled:opacity-60"
+        on:click={fetchOpenAlexMentions}
+        disabled={openAlexLoading}
+        title="Re-check OpenAlex"
+      >
+        {openAlexLoading ? 'Checking…' : 'Refresh'}
+      </button>
+    </div>
   </div>
 
+  {#if openAlexError}
+    <p class="mt-3 text-sm text-red-600 dark:text-red-300">{openAlexError}</p>
+  {:else if openAlexLoading}
+    <p class="mt-3 text-sm text-slate-600 dark:text-slate-400">Querying OpenAlex…</p>
+  {:else if openAlex}
+    <div class="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-slate-600 dark:text-slate-400">
+      <div>
+        Total matched works:
+        <span class="font-semibold text-slate-800 dark:text-slate-100">{openAlex.total}</span>
+      </div>
+      <div class="opacity-70">
+        query: <span class="font-mono">{openAlex.query_used}</span>
+      </div>
+    </div>
+
+    {#if openAlexFiltered?.length}
+      <div class="mt-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-950/40 p-4">
+        <!-- Chart -->
+        <div class="flex items-end gap-2 h-44 border-b border-slate-200 dark:border-slate-800 pb-2 overflow-x-auto">
+          {#each openAlexFiltered as d (d.year)}
+            <div class="group relative flex flex-col items-center min-w-[34px]">
+              <!-- Tooltip -->
+              <div
+                class="pointer-events-none absolute -top-9 opacity-0 group-hover:opacity-100 transition
+                       text-xs px-2 py-1 rounded-md
+                       bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow"
+              >
+                {d.year}: {d.count}
+              </div>
+
+              <!-- Animated bar -->
+              <div
+                class="w-7 rounded-t-lg
+                       bg-gradient-to-t from-red-600/70 to-red-400/90
+                       shadow-sm shadow-red-500/20
+                       transition-all duration-700 ease-out
+                       group-hover:brightness-110"
+                style={`height:${Math.round((d.count / maxCount) * 150)}px`}
+              />
+
+              <!-- Year label -->
+              <div class="mt-2 text-[11px] text-slate-600 dark:text-slate-400 whitespace-nowrap">
+                {d.year}
+              </div>
+            </div>
+          {/each}
+        </div>
+
+        <!-- Little legend / hint -->
+        <div class="mt-3 flex items-center justify-between text-xs text-slate-500 dark:text-slate-500">
+          <span>Hover a bar for counts</span>
+          <span>Max in view: {maxCount}</span>
+        </div>
+      </div>
+    {:else}
+      <p class="mt-4 text-sm text-slate-600 dark:text-slate-400">
+        No matches in the last {yearsBack} years. Try increasing “Years back” or hit Refresh.
+      </p>
+    {/if}
+
+    <p class="mt-4 text-xs text-slate-500 dark:text-slate-500">
+      Note: OpenAlex search is fuzzy; this panel tries the GitHub URL first, then falls back to repo name/owner.
+    </p>
+  {/if}
 </div>
+
+
 
       </div>
     {/if}
