@@ -26,7 +26,7 @@ In response, **the Red List of Endangered Software** focuses on long-term develo
 
 ## License
 
-MIT License. See `LICENSE` for details.
+Apache 2.0 License. See [LICENSE](https://github.com/natesheehan/endangered-software?tab=Apache-2.0-1-ov-file#readme) for details.
 
 
 ## Contributing to the project
