@@ -1,6 +1,14 @@
 ![Repo Health](https://endangered-software.vercel.app//api/badge?owner=natesheehan&repo=endangered-software)
 
 # Endangered software monitor
+<p align="center">
+  <img
+    src="https://github.com/user-attachments/assets/10e5a5ff-64e2-448f-b172-da9cd978cc2f"
+    alt="Logo"
+    width="250"
+    height="250"
+  />
+</p>
 
 Endangered open software refers to open-source and openly distributed software projects whose continued development, maintenance, or availability is at risk, despite their ongoing use and significance. These risks are rarely the result of a single failure. More often, they emerge from the accumulation of mundane pressures such as limited maintainer time, unstable funding, technical debt, dependency fragility, and declining contributor communities. Over time, these ordinary conditions can undermine the sustainability of software that remains deeply embedded in research, industry, and public infrastructure.
 
@@ -15,6 +23,10 @@ Alongside these are a growing number of commercial analytics products, such as [
 This project starts from a simple observation: open software usually fails *slowly and quietly*. Maintenance burdens accumulate, governance structures thin out, dependencies harden, and platforms or institutions shift beneath a project’s feet.
 
 In response, **the Red List of Endangered Software** focuses on long-term development trajectories rather than momentary signals. The first complete version of the Red List of Endangered Software is currently in development and is planned for release in 2026. At present, the project is focused on building a robust and reliable monitoring tool that can be applied at scale across a large corpus of open software repositories. Future phases of the work will also examine software ecosystems more broadly, including package managers, social and collaborative networks, and patterns of use in scientific research and industry.
+
+## License
+
+MIT License. See `LICENSE` for details.
 
 
 ## Contributing to the project
