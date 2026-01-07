@@ -18,11 +18,18 @@ Endangered open software refers to open-source and openly distributed software p
 
 Alongside these are a growing number of commercial analytics products, such as [Graphite’s repository analytics](https://graphite.com/guides/guide-to-github-repo-analytics). These tools offer polished insights into development workflows and team productivity. They are effective for managing active engineering teams, but they are typically scoped to GitHub, tuned to short-term activity, and oriented toward optimisation rather than long-term sustainability.
 
-## Why the Red List?
+## How does it work?
+Currently the tool focuses on a small number of interpretable signals such as:
 
-This project starts from a simple observation: open software usually fails *slowly and quietly*. Maintenance burdens accumulate, governance structures thin out, dependencies harden, and platforms or institutions shift beneath a project’s feet.
+- Activity — days since last update, commits in the past year
+- Maintenance — open vs closed issues and average issue age
+- Community — number of recent contributors
+- Popularity — stars and forks (contextual, not dominant)
+Each metric reflects a different dimension of software sustainability: technical upkeep, responsiveness, and social resilience.
 
-In response, **the Red List of Endangered Software** focuses on long-term development trajectories rather than momentary signals. The first complete version of the Red List of Endangered Software is currently in development and is planned for release in 2026. At present, the project is focused on building a robust and reliable monitoring tool that can be applied at scale across a large corpus of open software repositories. Future phases of the work will also examine software ecosystems more broadly, including package managers, social and collaborative networks, and patterns of use in scientific research and industry.
+The health score starts at 100 and is reduced based on risk factors such as long periods of inactivity, high ratios of open issues, or a lack of recent contributors.
+
+The resulting score is mapped to conservation-style categories such as Least Concern, Endangered, and Extinct. See [src](https://github.com/natesheehan/endangered-software/tree/main/src) for implementation. 
 
 ## License
 
